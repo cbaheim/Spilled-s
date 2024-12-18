@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpilleDås Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #fff;
+        }
+
+        header {
+            background-color: #1db954;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        main {
+            padding: 1rem;
+        }
+
+        .song-search {
+            margin-bottom: 1.5rem;
+        }
+
+        .song-search input {
+            width: 100%;
+            padding: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .song-list, .queue {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #2c2c2c;
+            border-radius: 8px;
+        }
+
+        .song {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #444;
+        }
+
+        .song:last-child {
+            border-bottom: none;
+        }
+
+        .song button {
+            background-color: #1db954;
+            border: none;
+            padding: 0.5rem 1rem;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .song button:hover {
+            background-color: #17a74c;
+        }
+
+        .now-playing {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #333;
+            border-radius: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>SpilleDås Demo</h1>
+    </header>
+    <main>
+        <div class="song-search">
+            <input type="text" id="searchInput" placeholder="Søk etter en låt...">
+        </div>
+
+        <div class="song-list" id="songList">
+            <h2>Tilgjengelige låter</h2>
+        </div>
+
+        <div class="queue" id="queue">
+            <h2>Spillekø</h2>
+        </div>
+
+        <div class="now-playing" id="nowPlaying">
+            <h2>Nå spiller</h2>
+            <p>Ingen låt spilles for øyeblikket</p>
+        </div>
+    </main>
+
+    <script>
+        // Sample songs
+        const songs = [
+            { title: "Song Title 1", artist: "Artist 1" },
+            { title: "Song Title 2", artist: "Artist 2" },
+            { title: "Song Title 3", artist: "Artist 3" }
+        ];
+
+        const songList = document.getElementById('songList');
+        const queue = document.getElementById('queue');
+        const nowPlaying = document.getElementById('nowPlaying').querySelector('p');
+
+        const renderSongs = (songs) => {
+            songList.innerHTML = '<h2>Tilgjengelige låter</h2>';
+            songs.forEach(song => {
+                const songElement = document.createElement('div');
+                songElement.className = 'song';
+                songElement.innerHTML = `
+                    <span>${song.title} - ${song.artist}</span>
+                    <button onclick="addToQueue('${song.title}', '${song.artist}')">Legg til i kø</button>
+                `;
+                songList.appendChild(songElement);
+            });
+        };
+
+        const addToQueue = (title, artist) => {
+            const queueItem = document.createElement('div');
+            queueItem.className = 'song';
+            queueItem.innerHTML = `<span>${title} - ${artist}</span>`;
+            queue.appendChild(queueItem);
+            if (nowPlaying.textContent === "Ingen låt spilles for øyeblikket") {
+                playSong(title, artist);
+            }
+        };
+
+        const playSong = (title, artist) => {
+            nowPlaying.textContent = `${title} - ${artist}`;
+        };
+
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filteredSongs = songs.filter(song =>
+                song.title.toLowerCase().includes(query) ||
+                song.artist.toLowerCase().includes(query)
+            );
+            renderSongs(filteredSongs);
+        });
+
+        // Initial render
+        renderSongs(songs);
+    </script>
+</body>
+</html>
